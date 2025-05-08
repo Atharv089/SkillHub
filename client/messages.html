@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages - SkillHub</title>
+  <style>
+    body { font-family: Arial; display: flex; }
+    .inbox, .chatbox { padding: 20px; border: 1px solid #ccc; width: 50%; height: 500px; overflow-y: auto; }
+    .chatbox { border-left: none; }
+    input, button { width: 100%; margin-top: 10px; padding: 10px; }
+    button { background: #004080; color: white; border: none; }
+  </style>
+</head>
+<body>
+  <div class="inbox" id="inbox">
+    <h3>Inbox</h3>
+    <!-- List of senders here -->
+  </div>
+  <div class="chatbox">
+    <div id="messageThread"></div>
+    <input type="text" id="newMessage" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

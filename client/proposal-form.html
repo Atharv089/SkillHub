@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submit Proposal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    textarea, input {
+      padding: 10px;
+      font-size: 16px;
+      width: 100%;
+    }
+    button {
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Submit Your Proposal</h1>
+
+  <form id="proposalForm">
+    <label for="pitch">Why do you want to do this project?</label>
+    <textarea id="pitch" rows="5" required placeholder="Describe your motivation and approach..."></textarea>
+
+    <label for="quote">What is your proposed budget? (₹)</label>
+    <input type="number" id="quote" required placeholder="e.g. 5000" min="0" />
+
+    <label for="timeline">How much time do you need to complete it? (in days/weeks)</label>
+    <input type="text" id="timeline" required placeholder="e.g. 2 weeks" />
+
+    <div id="projectDetails" class="card">
+      <p>Loading project details...</p>
+    </div>
+    
+
+    <button type="submit">Submit Proposal</button>
+  </form>
+
+  <script src="script.js"></script>
+</body>
+</html>

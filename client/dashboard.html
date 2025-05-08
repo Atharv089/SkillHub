@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - SkillHub</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #ffffff;
+      color: #0d3b66;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0d3b66;
+      padding: 1rem 2rem;
+      color: #fff;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 1rem;
+      font-weight: 500;
+    }
+
+    main {
+      padding: 2rem;
+    }
+
+    .welcome {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 0.7rem 1.2rem;
+      background-color: #0d3b66;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin: 1rem 0;
+    }
+
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    .section h3 {
+      margin-bottom: 0.5rem;
+      color: #0d3b66;
+    }
+
+    .card-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .card {
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 6px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .nav-links a {
+      background: #0d3b66;
+      color: white;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background-color: #f0f0f0;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="navbar">
+      <div class="logo">SkillHub</div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="logout.html">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Replace the old content inside <main> with this updated version -->
+
+<main>
+  <!-- CLIENT DASHBOARD -->
+  <div id="clientDashboard" class="hidden">
+    <div class="welcome">Welcome back, <span id="clientName">Client</span>!</div>
+
+    <section class="section">
+      <a class="cta-button" href="post-project.html">+ Post New Project</a>
+    </section>
+
+    <section class="section">
+      <h3>My Projects Overview</h3>
+      <div class="card-grid" id="clientProjects">
+        <!-- Example cards – you can populate dynamically via JS if needed -->
+        <div class="card-grid" id="clientProjects">
+          <p>Loading your projects...</p>
+        </div>
+        
+        <!-- <div class="card">
+          <strong>SEO Optimization</strong><br>
+          Status: Open<br>
+          Bids: 3<br>
+          <a class="cta-button" href="/client/dashboard.html">View Details</a>
+        </div> -->
+      </div>
+    </section>
+
+    <section class="section">
+      <h3>Navigation</h3>
+      <div class="nav-links">
+        <a href="dashboard.html">View Proposals</a>
+        <a href="messages.html">Messages</a>
+        <a href="profile.html">Profile</a>
+        <a href="logout.html">Logout</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- FREELANCER DASHBOARD -->
+  <!-- <div id="freelancerDashboard" class="hidden">
+    <div class="welcome">Welcome back, <span id="freelancerName">Freelancer</span>!</div>
+
+    <section class="section">
+      <h3>Browse Projects</h3>
+      <div class="card-grid" id="freelancerProjects">
+        <div class="card">
+          <strong>Design Mobile App</strong><br>
+          Budget: ₹40,000<br>
+          Short Description: Need UI/UX for fintech app.<br>
+          <a class="cta-button" href="proposal-form.html">Apply</a>
+        </div>
+        <div class="card">
+          <strong>Create Landing Page</strong><br>
+          Budget: ₹15,000<br>
+          Short Description: Build responsive marketing page.<br>
+          <a class="cta-button" href="proposal-form.html">Apply</a>
+        </div>
+      </div>
+      <a class="cta-button" href="browse-projects.html">Browse More Projects</a>
+    </section> -->
+    <!-- FREELANCER DASHBOARD -->
+<!-- FREELANCER DASHBOARD -->
+<div id="freelancerDashboard" class="hidden">
+  <div class="welcome">Welcome back, <span id="freelancerName">Freelancer</span>!</div>
+
+  <section class="section">
+    <h3>Browse Projects</h3>
+    <div class="card-grid" id="freelancerProjects">
+      <!-- All available projects for freelancers will appear here -->
+    </div>
+  </section>
+</div>
+</main>
+
+
+<script>
+  const API_URL = "http://127.0.0.1:4000";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const userRole = localStorage.getItem("role") || "client";
+    const userName = localStorage.getItem("username") || "User";
+    const userId = localStorage.getItem("userId");
+
+    if (userRole === "client") {
+      document.getElementById("clientDashboard").classList.remove("hidden");
+      document.getElementById("clientName").textContent = userName;
+
+      fetch(`${API_URL}/projects/my-projects/${userId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const container = document.getElementById("clientProjects");
+          container.innerHTML = ""; // clear dummy cards
+
+          if (data.success && data.projects.length > 0) {
+            data.projects.forEach((project) => {
+              const div = document.createElement("div");
+              div.className = "card";
+              div.innerHTML = `
+                <strong>${project.title}</strong><br>
+                Budget: ₹${project.budget}<br>
+                Deadline: ${new Date(project.deadline).toLocaleDateString()}<br>
+                <a class="cta-button" href="#">View Details</a>
+              `;
+              container.appendChild(div);
+            });
+          } else {
+            container.innerHTML = "<p>No projects found.</p>";
+          }
+        })
+        .catch((err) => {
+          console.error("Error loading client projects:", err);
+          document.getElementById("clientProjects").innerHTML = "<p>Error loading projects.</p>";
+        });
+    } else {
+      document.getElementById("freelancerDashboard").classList.remove("hidden");
+      document.getElementById("freelancerName").textContent = userName;
+    }
+  });
+</script>
+
+
+  <footer>
+    <p>&copy; 2025 SkillHub. All rights reserved.</p>
+  </footer>
+</body>
+</html>

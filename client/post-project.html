@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post a Project - SkillHub</title>
+  <style>
+    body { font-family: Arial; background: #fff; color: #004080; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+    input, textarea, button { width: 100%; padding: 10px; margin: 10px 0; }
+    button { background: #004080; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Post a New Project</h2>
+    <form id="postProjectForm">
+      <input type="text" id="projectTitle" placeholder="Project Title" required />
+      <textarea id="projectDescription" placeholder="Project Description" required></textarea>
+      <input type="text" id="skills" placeholder="Required Skills (comma separated)" required />
+      <input type="number" id="budget" placeholder="Budget" required />
+      <input type="date" id="deadline" required />
+      <button type="submit">Submit Project</button>
+    </form>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
