@@ -1,0 +1,140 @@
+<!-- client.html (Updated for conditional messaging) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Client Dashboard - SkillHub</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #ffffff;
+      color: #0d3b66;
+      margin: 0;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0d3b66;
+      padding: 1rem 2rem;
+      color: #fff;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 1rem;
+      font-weight: 500;
+    }
+    main {
+      padding: 2rem;
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background-color: #0d3b66;
+      color: white;
+      border: none;
+      text-decoration: none;
+      border-radius: 5px;
+      margin: 0.3rem 0.3rem 0 0;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 1rem;
+      margin: 1rem 0;
+      background-color: #f9f9f9;
+    }
+    /* footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background-color: #f0f0f0;
+      color: #666;
+      margin-top: 2rem;
+    } */
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">SkillHub - Client</div>
+    <nav>
+      <a href="logout.html">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Welcome, <span id="clientName"></span>👋</h2>
+    <a href="post-project.html" class="cta-button">📌 Post a New Project</a>
+    <section>
+      <h3>My Projects</h3>
+      <div id="projectList">
+        <p>Loading your projects...</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- <footer>
+    <p>&copy; 2025 SkillHub</p>
+  </footer> -->
+
+  <script>
+    const API_URL = "http://127.0.0.1:4000";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const userId = localStorage.getItem("userId");
+      const clientName = localStorage.getItem("username");
+      document.getElementById("clientName").textContent = clientName;
+
+      fetch(`${API_URL}/projects/my-project/${userId}`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("projectList");
+          container.innerHTML = "";
+
+          if (data.success && data.projects.length > 0) {
+            data.projects.forEach(project => {
+              const div = document.createElement("div");
+              div.className = "card";
+              div.innerHTML = `
+                <strong>${project.title}</strong><br>
+                ₹${project.budget} | ${new Date(project.deadline).toLocaleDateString()}<br>
+                <p>${project.description}</p>
+                <a class="cta-button" href="project-details.html?project_id=${project.id}">View Details</a>
+                <a class="cta-button" href="view-proposals.html?project_id=${project.id}">View Proposals</a>
+              `;
+              container.appendChild(div);
+
+              // Fetch proposals for messaging
+              fetch(`${API_URL}/proposals/by-project/${project.id}`)
+                .then(res => res.json())
+                .then(propData => {
+                  if (propData.success && propData.proposals.length > 0) {
+                    propData.proposals.forEach(p => {
+                      const msgBtn = document.createElement("a");
+                      msgBtn.className = "cta-button";
+                      msgBtn.href = `message.html?userId=${p.freelancer_id}`;
+                      msgBtn.textContent = `Message ${p.freelancer_name}`;
+                      div.appendChild(msgBtn);
+                    });
+                  }
+                });
+            });
+          } else {
+            container.innerHTML = "<p>No projects found.</p>";
+          }
+        })
+        .catch(err => {
+          console.error("Error loading projects:", err);
+          document.getElementById("projectList").innerHTML = "<p>Failed to load projects.</p>";
+        });
+    });
+  </script>
+</body>
+</html>

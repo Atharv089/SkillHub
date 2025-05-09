@@ -4,61 +4,165 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Submit Proposal</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 40px;
-      max-width: 600px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    textarea, input {
-      padding: 10px;
-      font-size: 16px;
-      width: 100%;
-    }
-    button {
-      padding: 12px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: #007bff;
-      color: white;
-      border: none;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+   <style>
+  * {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #f2f5f9;
+    color: #333;
+    padding: 2rem;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .container:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  }
+
+  h1 {
+  text-align: center;
+  color: #0d3b66;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem; /* You can adjust this value */
+}
+
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fdfdfd;
+    transition: border-color 0.3s;
+  }
+
+  input:focus, textarea:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 1.5rem;
+    background-color: #0d3b66;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  .input-group {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.input-group textarea,
+.input-group input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background-color: transparent;
+  resize: none;
+}
+
+#projectDetails {
+  margin-top: 1rem;
+  background-color: #f8fafc;
+  border: 1px solid #e0e0e0;
+  border-left: 4px solid #0d3b66;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.card-box {
+  margin-bottom: 10px; /* Consistent spacing between each form group */
+}
+
+.card-box label {
+  display: block;
+  margin-bottom: px;  /* Space between label and input */
+  font-weight: 500;
+}
+
+.card-box input,
+.card-box textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+</style>
+
 </head>
 <body>
+  <div class="container">
+    <h1>Submit Your Proposal</h1>
 
-  <h1>Submit Your Proposal</h1>
+    <form id="proposalForm">
+      <div class="card-box">
+        <label for="pitch">Why do you want to do this project?</label>
+        <textarea id="pitch" rows="5" required placeholder="Describe your motivation and approach..."></textarea>
+      </div>
 
-  <form id="proposalForm">
-    <label for="pitch">Why do you want to do this project?</label>
-    <textarea id="pitch" rows="5" required placeholder="Describe your motivation and approach..."></textarea>
+      <div class="card-box">
+        <label for="budget">What is your proposed budget? (₹)</label>
+        <input type="number" id="budget" name="budget" placeholder="e.g. 5000">
+      </div>
 
-    <label for="quote">What is your proposed budget? (₹)</label>
-    <input type="number" id="quote" required placeholder="e.g. 5000" min="0" />
+      <div class="card-box">
+        <label for="timeline">How much time do you need to complete it? (in days/weeks)</label>
+        <input type="text" id="timeline" name="timeline" placeholder="e.g. 2 weeks">
+      </div>
 
-    <label for="timeline">How much time do you need to complete it? (in days/weeks)</label>
-    <input type="text" id="timeline" required placeholder="e.g. 2 weeks" />
 
-    <div id="projectDetails" class="card">
-      <p>Loading project details...</p>
-    </div>
-    
+      <div id="projectDetails">
+        <strong>Project Details:</strong>
+        <p>Loading project details...</p>
+      </div>
 
-    <button type="submit">Submit Proposal</button>
-  </form>
-
+      <button type="submit">Submit Proposal</button>
+    </form>
+  </div>
   <script src="script.js"></script>
 </body>
+
 </html>

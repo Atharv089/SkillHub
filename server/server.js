@@ -10,23 +10,15 @@ const messageRoutes = require('./routes/message');
 
 const app = express();
 
-// CORS config to allow frontend from 127.0.0.1:5500
+// CORS config
 app.use(cors({
   origin: "http://127.0.0.1:5500",
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
-
+app.use(cors({ origin: "http://127.0.0.1:5500", methods: ["GET", "POST", "PUT", "DELETE"], credentials: true }));
 app.use(bodyParser.json());
 app.use(express.json());
-
-// Route for /projects
-app.use('/projects', projectRoutes);
-
-// Start server
-app.listen(4000, () => {
-  console.log('Server running on http://127.0.0.1:4000');
-});
 
 // ✅ MySQL Connection
 const db = mysql.createConnection({
@@ -47,14 +39,14 @@ db.connect((err) => {
 // Make db available globally
 app.set("db", db);
 
-// Mount routes
+// ✅ Mount routes
 app.use("/auth", authRoutes);
 app.use("/projects", projectRoutes);
 app.use("/proposals", proposalRoutes);
 app.use("/messages", messageRoutes);
 
-// Start the server
+// ✅ Start the server (only once!)
 const PORT = 4000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running at http://127.0.0.1:${PORT}`);
 });

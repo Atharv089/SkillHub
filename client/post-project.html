@@ -5,11 +5,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Post a Project - SkillHub</title>
   <style>
-    body { font-family: Arial; background: #fff; color: #004080; margin: 0; padding: 0; }
-    .container { max-width: 600px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
-    input, textarea, button { width: 100%; padding: 10px; margin: 10px 0; }
-    button { background: #004080; color: white; border: none; cursor: pointer; }
-  </style>
+  * {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #f2f5f9;
+    color: #333;
+    padding: 2rem;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .container:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fdfdfd;
+    transition: border-color 0.3s ease;
+  }
+
+  input:focus,
+  textarea:focus {
+    border-color: #0d3b66;
+    outline: none;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 1.5rem;
+    background-color: #0d3b66;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #0056b3; /* darker version of #0d3b66 for hover */
+  }
+
+  h1, h2, h3 {
+    text-align: center;
+    color: #0d3b66;
+    margin-bottom: 1rem;
+  }
+</style>
+
+
 </head>
 <body>
   <div class="container">
@@ -23,6 +89,9 @@
       <button type="submit">Submit Project</button>
     </form>
   </div>
-  <script src="script.js"></script>
+  <script src="script.js">
+
+
+  </script>
 </body>
 </html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Proposals - SkillHub</title>
+  <style>
+  /* Base Reset and Typography */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    background-color: #f9f9f9;
+    color: #333;
+    padding: 2rem;
+    line-height: 1.6;
+  }
+
+  /* Container */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Header */
+  h2 {
+    text-align: center;
+    color: #0d3b66;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Proposal Card */
+  .proposal {
+    background-color: #fefefe;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .proposal:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .proposal h4 {
+    color: #007bff;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .proposal p {
+    margin: 0.4rem 0;
+    font-size: 1rem;
+  }
+
+  .proposal strong {
+    color: #0d3b66;
+  }
+
+  .meta {
+    font-size: 0.85rem;
+    color: #777;
+    margin-top: 0.5rem;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #999;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>Proposals for Your Project</h2>
+    <div id="proposalList">
+      <p>Loading proposals...</p>
+    </div>
+  </div>
+
+
+
+  <script>
+    const API_URL = "http://127.0.0.1:4000";
+    const projectId = new URLSearchParams(window.location.search).get("project_id");
+
+    function loadProposals() {
+      fetch(`${API_URL}/proposals/by-project/${projectId}`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("proposalList");
+          container.innerHTML = "";
+
+          if (data.success && data.proposals.length > 0) {
+            data.proposals.forEach(p => {
+              const div = document.createElement("div");
+              div.className = "proposal";
+              div.innerHTML = `
+                <h4>Freelancer: ${p.freelancer_name || 'Anonymous'}</h4>
+                <p><strong>Quote:</strong> ₹${p.quote}</p>
+                <p><strong>Timeline:</strong> ${p.timeline}</p>
+                <p><strong>Pitch:</strong> ${p.pitch}</p>
+                <p class="meta">Submitted on: ${new Date(p.created_at).toLocaleDateString()}</p>
+              `;
+              container.appendChild(div);
+            });
+          } else {
+            container.innerHTML = "<p>No proposals yet for this project.</p>";
+          }
+        })
+        .catch(err => {
+          console.error("Error loading proposals:", err);
+          document.getElementById("proposalList").innerHTML = "<p>Failed to load proposals.</p>";
+        });
+    }
+
+    loadProposals();
+  </script>
+</body>
+</html>

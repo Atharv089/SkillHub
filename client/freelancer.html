@@ -1,0 +1,163 @@
+<!-- freelancer.html (Updated to fix project and proposal loading) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Freelancer Dashboard - SkillHub</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #ffffff;
+      color: #0d3b66;
+      margin: 0;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0d3b66;
+      padding: 1rem 2rem;
+      color: #fff;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 1rem;
+      font-weight: 500;
+    }
+    main {
+      padding: 2rem;
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background-color: #0d3b66;
+      color: white;
+      border: none;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 1rem;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 1rem;
+      margin: 1rem 0;
+      background-color: #f9f9f9;
+    }
+    /* footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background-color: #ffffff;
+      color: #666;
+      margin-top: 2rem;
+    } */
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">SkillHub - Freelancer</div>
+    <nav>
+      <a href="logout.html">Logout</a>
+      <!--<a href="create-profile.html">Create Profile</a> -->
+    </nav>
+  </header>
+
+  <main>
+    <h2>Welcome, <span id="freelancerName"></span> 👋</h2>
+
+    <section>
+      <h3>Available Projects</h3>
+      <div id="availableProjects">
+        <p>Loading projects...</p>
+      </div>
+    </section>
+
+    <section>
+      <h3>My Proposals</h3>
+      <div id="myProposals">
+        <p>Loading your proposals...</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- <footer>
+    <p>&copy; 2025 SkillHub</p>
+  </footer> -->
+
+  <script>
+    const API_URL = "http://127.0.0.1:4000";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const freelancerId = localStorage.getItem("userId");
+      const freelancerName = localStorage.getItem("username");
+      document.getElementById("freelancerName").textContent = freelancerName;
+
+      // Load available projects
+      fetch(`${API_URL}/projects`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("availableProjects");
+          container.innerHTML = "";
+
+          if (data.success && data.projects.length > 0) {
+            data.projects.forEach(project => {
+              if (project.client_id != freelancerId) {
+                const div = document.createElement("div");
+                div.className = "card";
+                div.innerHTML = `
+                  <strong>${project.title}</strong><br>
+                  ₹${project.budget} | Deadline: ${new Date(project.deadline).toLocaleDateString()}<br>
+                  <p>${project.description}</p>
+                  <a class="cta-button" href="proposal-form.html?project_id=${project.id}">Apply</a>
+                `;
+                container.appendChild(div);
+              }
+            });
+          } else {
+            container.innerHTML = "<p>No projects available.</p>";
+          }
+        })
+        .catch(err => {
+          console.error("Error loading projects:", err);
+          document.getElementById("availableProjects").innerHTML = "<p>Failed to load projects.</p>";
+        });
+
+      // Load freelancer's own proposals
+      fetch(`${API_URL}/proposals/my/${freelancerId}`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("myProposals");
+          container.innerHTML = "";
+
+          if (data.success && data.proposals.length > 0) {
+            data.proposals.forEach(p => {
+              const div = document.createElement("div");
+              div.className = "card";
+              div.innerHTML = `
+                <strong>Project:</strong> ${p.project_title}<br>
+                <strong>Quote:</strong> ₹${p.quote}<br>
+                <strong>Timeline:</strong> ${p.timeline}<br>
+                <p><strong>Pitch:</strong> ${p.pitch}</p>
+                <a class="cta-button" href="message.html?userId=${p.client_id}">Message Client</a>
+              `;
+              container.appendChild(div);
+            });
+          } else {
+            container.innerHTML = "<p>No proposals submitted yet.</p>";
+          }
+        })
+        .catch(err => {
+          console.error("Error loading proposals:", err);
+          document.getElementById("myProposals").innerHTML = "<p>Failed to load proposals.</p>";
+        });
+    });
+  </script>
+</body>
+</html>

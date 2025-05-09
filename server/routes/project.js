@@ -1,26 +1,27 @@
 const express = require("express");
 const router = express.Router();
+
 const {
   postProject,
   getAllProjects,
-  getClientProjects
+  getClientProjects,
+  updateProject,
+  deleteProject
 } = require("../controllers/projectController");
 
-const projectController = require('../controllers/projectController');
-
-
-// Route to post a new project
+// Create new project
 router.post("/", postProject);
 
-// Route to get all projects (generic)
+// Get all open projects (freelancer/public)
 router.get("/", getAllProjects);
 
-// Route to get projects posted by a specific client
+// Get all projects posted by a specific client
 router.get("/my-project/:clientId", getClientProjects);
 
+// Update a project
+router.put("/:projectId", updateProject);
+
+// Delete a project
+router.delete("/:projectId", deleteProject);
+
 module.exports = router;
-
-
-// GET all projects for freelancers
-router.get('/', projectController.getAllProjects);
-

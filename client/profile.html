@@ -1,25 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile - SkillHub</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Freelancer Profile</title>
   <style>
-    body { font-family: Arial; background: #fff; color: #004080; padding: 20px; }
-    .profile { max-width: 600px; margin: auto; }
-    .bio { margin-bottom: 20px; }
-    button { background: #004080; color: white; border: none; padding: 10px 15px; cursor: pointer; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f5f9;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background-color: #0d3b66;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    h1, h2, h3 {
+    text-align: center;
+    color: #0d3b66;
+    margin-bottom: 1rem;
+  }
   </style>
 </head>
 <body>
-  <div class="profile">
-    <h2>John Doe</h2>
-    <div class="bio">
-      <p>Skills: HTML, CSS, JavaScript</p>
-      <p>Portfolio: <a href="#">Link</a></p>
-    </div>
-    <button onclick="location.href='messages.html?userId=123'">Send Message</button>
+  <div class="container">
+    <h2>Create Profile</h2>
+    <form action="save-profile.php" method="POST" enctype="multipart/form-data">
+      <input type="text" name="full_name" placeholder="Your Name" required />
+      <textarea name="skills" rows="4" placeholder="Enter your skills..." required></textarea>
+      <input type="url" name="portfolio_link" placeholder="Portfolio URL" />
+      <label for="resume">Upload Resume (PDF)</label>
+      <input type="file" name="resume" accept="application/pdf" />
+      <input type="hidden" name="freelancer_id" value="123"> <!-- Use session ID in real code -->
+      <button type="submit">Save Profile</button>
+    </form>
   </div>
-  <script src="script.js"></script>
 </body>
 </html>

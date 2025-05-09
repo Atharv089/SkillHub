@@ -1,6 +1,6 @@
 const db = require("../db");
 
-// Controller to post a new project
+// ✅ POST - Add a new project
 const postProject = (req, res) => {
   const { title, description, skills, budget, deadline, client_id } = req.body;
 
@@ -10,7 +10,7 @@ const postProject = (req, res) => {
 
   const query = `INSERT INTO projects (title, description, skills, budget, deadline, client_id) VALUES (?, ?, ?, ?, ?, ?)`;
 
-  db.query(query, [title, description, skills, budget, deadline, client_id], (err, result) => {
+  db.query(query, [title, description, skills, budget, deadline, client_id], (err) => {
     if (err) {
       console.error("Error inserting project:", err);
       return res.status(500).json({ success: false, message: "Database error" });
@@ -20,42 +20,9 @@ const postProject = (req, res) => {
   });
 };
 
-// Controller to get all projects (used for freelancers or general browsing)
+// ✅ GET - All open projects (for freelancers)
 const getAllProjects = (req, res) => {
-  const query = "SELECT * FROM projects";
-
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error fetching projects:", err);
-      return res.status(500).json({ success: false, message: "Database error" });
-    }
-
-    res.json({ success: true, projects: results });
-  });
-};
-
-// Controller to get all projects of a specific client
-const getClientProjects = (req, res) => {
-  const { clientId } = req.params;
-
-  const query = `SELECT * FROM projects WHERE client_id = ?`;
-
-  db.query(query, [clientId], (err, results) => {
-    if (err) {
-      console.error("Error fetching client projects:", err);
-      return res.status(500).json({ success: false, message: "Database error" });
-    }
-
-    res.json({ success: true, projects: results });
-  });
-};
-
-
-
-// GET all projects (visible to freelancers)
-exports.getAllProjects = (req, res) => {
-  const sql = 'SELECT * FROM projects WHERE status = "Open"';
-
+  const sql = 'SELECT * FROM projects WHERE status = "Open" OR status IS NULL'; // fallback if no status column
   db.query(sql, (err, results) => {
     if (err) {
       console.error("Error fetching all projects:", err);
@@ -65,11 +32,10 @@ exports.getAllProjects = (req, res) => {
   });
 };
 
-// GET projects by a specific client
-exports.getProjectsByClient = (req, res) => {
+// ✅ GET - Projects by a specific client
+const getClientProjects = (req, res) => {
   const clientId = req.params.clientId;
   const sql = 'SELECT * FROM projects WHERE client_id = ?';
-
   db.query(sql, [clientId], (err, results) => {
     if (err) {
       console.error("Error fetching client projects:", err);
@@ -79,9 +45,42 @@ exports.getProjectsByClient = (req, res) => {
   });
 };
 
+// ✅ PUT - Update a project
+const updateProject = (req, res) => {
+  const { projectId } = req.params;
+  const { title, description, skills, budget, deadline } = req.body;
 
+  const sql = `
+    UPDATE projects SET title = ?, description = ?, skills = ?, budget = ?, deadline = ?
+    WHERE id = ?
+  `;
+  db.query(sql, [title, description, skills, budget, deadline, projectId], (err) => {
+    if (err) {
+      console.error("Error updating project:", err);
+      return res.status(500).json({ success: false, message: "Update failed" });
+    }
+    res.json({ success: true, message: "Project updated" });
+  });
+};
+
+// ✅ DELETE - Delete a project
+const deleteProject = (req, res) => {
+  const { projectId } = req.params;
+  const sql = "DELETE FROM projects WHERE id = ?";
+  db.query(sql, [projectId], (err) => {
+    if (err) {
+      console.error("Error deleting project:", err);
+      return res.status(500).json({ success: false, message: "Delete failed" });
+    }
+    res.json({ success: true, message: "Project deleted" });
+  });
+};
+
+// ✅ Export everything once
 module.exports = {
   postProject,
   getAllProjects,
-  getClientProjects
+  getClientProjects,
+  updateProject,
+  deleteProject
 };

@@ -1,6 +1,9 @@
-const API_URL = "http://127.0.0.1:4000"; // Make sure your backend is running here!
+// script.js (UPDATED with messaging and bug fixes)
+const API_URL = "http://127.0.0.1:4000";
 
-// ===== REGISTER FUNCTION =====
+// =======================
+// REGISTER FUNCTION
+// =======================
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
   registerForm.onsubmit = async (e) => {
@@ -19,7 +22,7 @@ if (registerForm) {
       const res = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, role })
+        body: JSON.stringify({ name, email, password, role }),
       });
 
       const data = await res.json();
@@ -36,7 +39,9 @@ if (registerForm) {
   };
 }
 
-// ===== LOGIN FUNCTION =====
+// =======================
+// LOGIN FUNCTION
+// =======================
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
   loginForm.onsubmit = async (e) => {
@@ -53,7 +58,7 @@ if (loginForm) {
       const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
@@ -62,15 +67,14 @@ if (loginForm) {
         localStorage.setItem("role", data.user.role);
         localStorage.setItem("username", data.user.name);
 
-        alert("✅ Login successful");
+        //alert("✅ Login successful");
 
-        // Redirect based on role
         if (data.user.role === "client") {
-          window.location.href = "/client/dashboard.html";
+          window.location.href = "client.html";
         } else if (data.user.role === "freelancer") {
-          window.location.href = "/client/dashboard.html";
+          window.location.href = "freelancer.html";
         } else {
-          window.location.href = "/client/dashboard.html";
+          alert("❌ Invalid user role.");
         }
       } else {
         alert("❌ " + (data.message || "Invalid email or password"));
@@ -82,7 +86,9 @@ if (loginForm) {
   };
 }
 
-// ===== POST PROJECT FUNCTION =====
+// =======================
+// POST PROJECT
+// =======================
 const postForm = document.getElementById("postProjectForm");
 if (postForm) {
   postForm.onsubmit = async (e) => {
@@ -96,7 +102,7 @@ if (postForm) {
       skills: document.getElementById("skills").value.trim(),
       budget: document.getElementById("budget").value.trim(),
       deadline: document.getElementById("deadline").value.trim(),
-      client_id: userId
+      client_id: userId,
     };
 
     if (!project.title || !project.description || !project.skills || !project.budget || !project.deadline) {
@@ -107,13 +113,13 @@ if (postForm) {
       const res = await fetch(`${API_URL}/projects`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(project)
+        body: JSON.stringify(project),
       });
 
       const data = await res.json();
       if (res.ok) {
         alert("✅ " + data.message);
-        window.location.href = "/client/dashboard.html";
+        window.location.href = "client.html";
       } else {
         alert("❌ " + (data.message || "Could not submit project."));
       }
@@ -124,7 +130,9 @@ if (postForm) {
   };
 }
 
-// ===== SUBMIT PROPOSAL FUNCTION =====
+// =======================
+// SUBMIT PROPOSAL
+// =======================
 const proposalForm = document.getElementById("proposalForm");
 if (proposalForm) {
   proposalForm.onsubmit = async (e) => {
@@ -141,34 +149,33 @@ if (proposalForm) {
       return alert("❗ Please fill in all fields.");
     }
 
-    try {
-      const res = await fetch(`${API_URL}/proposals`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pitch,
-          quote,
-          timeline,
-          project_id: projectId,
-          freelancer_id: freelancerId
-        })
-      });
+    const res = await fetch(`${API_URL}/proposals`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        pitch,
+        quote,
+        timeline,
+        project_id: projectId,
+        freelancer_id: freelancerId
+      }),
+    });
 
-      const data = await res.json();
-      if (res.ok) {
-        alert("✅ " + data.message);
-        window.location.href = "/client/dashboard.html";
-      } else {
-        alert("❌ " + (data.message || "Could not submit proposal."));
-      }
-    } catch (err) {
-      console.error("Proposal Error:", err);
-      alert("❌ Could not submit proposal.");
+    const data = await res.json();
+    if (res.ok) {
+      alert("✅ " + data.message);
+      window.location.href = "freelancer.html";
+    } else {
+      alert("❌ " + (data.message || "Could not submit proposal."));
     }
   };
 }
 
-// === PREFILL PROJECT DETAILS ON PROPOSAL FORM ===
+
+
+// =======================
+// LOAD PROJECT DETAILS IN PROPOSAL FORM
+// =======================
 const projectDetailsSection = document.getElementById("projectDetails");
 const projectId = new URLSearchParams(window.location.search).get("project_id");
 
@@ -182,7 +189,7 @@ if (projectDetailsSection && projectId) {
           projectDetailsSection.innerHTML = `
             <h2>${project.title}</h2>
             <p><strong>Description:</strong> ${project.description}</p>
-            <p><strong>Skills Required:</strong> ${project.skills}</p>
+            <p><strong>Skills:</strong> ${project.skills}</p>
             <p><strong>Budget:</strong> ₹${project.budget}</p>
             <p><strong>Deadline:</strong> ${new Date(project.deadline).toLocaleDateString()}</p>
           `;
@@ -192,83 +199,85 @@ if (projectDetailsSection && projectId) {
       }
     })
     .catch(err => {
-      console.error("Error fetching project:", err);
-      projectDetailsSection.innerHTML = "<p>Error loading project details.</p>";
+      console.error("Error loading project details:", err);
+      projectDetailsSection.innerHTML = "<p>Error loading project info.</p>";
     });
 }
 
-// ===== DASHBOARD LOAD =====
-document.addEventListener('DOMContentLoaded', () => {
-  const userRole = localStorage.getItem("role") || "client";  // Default to 'client'
-  const userName = localStorage.getItem("username") || "User";
-  const userId = localStorage.getItem("userId");
+// =======================
+// MESSAGING SYSTEM
+// =======================
+const inboxContainer = document.getElementById("inbox");
+const chatThread = document.getElementById("messageThread");
+const newMessageInput = document.getElementById("newMessage");
 
-  // Client Dashboard
-  if (userRole === "client") {
-    document.getElementById("clientDashboard").classList.remove("hidden");
-    document.getElementById("clientName").textContent = userName;
+let currentUserId = localStorage.getItem("userId");
+let activeReceiverId = null;
 
-    // Fetch projects posted by the client
-    fetch(`${API_URL}/projects/my-projects/${userId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        const container = document.getElementById("clientProjects");
-        container.innerHTML = ""; // Clear "Loading..." message
-
-        if (data.success && data.projects.length > 0) {
-          data.projects.forEach((project) => {
-            const div = document.createElement("div");
-            div.className = "card";
-            div.innerHTML = `
-              <strong>${project.title}</strong><br>
-              Budget: ₹${project.budget}<br>
-              Deadline: ${new Date(project.deadline).toLocaleDateString()}<br>
-              <a class="cta-button" href="#">View Details</a>
-            `;
-            container.appendChild(div);
-          });
-        } else {
-          container.innerHTML = "<p>No projects found.</p>";
-        }
-      })
-      .catch((err) => {
-        console.error("Error loading client projects:", err);
-        document.getElementById("clientProjects").innerHTML = "<p>Error loading projects.</p>";
+if (inboxContainer) {
+  fetch(`${API_URL}/messages/inbox/${currentUserId}`)
+    .then(res => res.json())
+    .then(data => {
+      inboxContainer.innerHTML += "<ul>";
+      data.forEach(user => {
+        inboxContainer.innerHTML += `<li><button onclick="loadThread(${user.id})">${user.name}</button></li>`;
       });
-
-  } else {
-    // Freelancer Dashboard
-    document.getElementById("freelancerDashboard").classList.remove("hidden");
-    document.getElementById("freelancerName").textContent = userName;
-
-    // Fetch all available projects for freelancers
-    fetch(`${API_URL}/projects`)
-      .then((res) => res.json())
-      .then((data) => {
-        const container = document.getElementById("freelancerProjects");
-        container.innerHTML = ""; // Clear "Loading..." message
-
-        if (data.success && data.projects.length > 0) {
-          data.projects.forEach((project) => {
-            const div = document.createElement("div");
-            div.className = "card";
-            div.innerHTML = `
-              <strong>${project.title}</strong><br>
-              Budget: ₹${project.budget}<br>
-              Skills: ${project.skills}<br>
-              Deadline: ${new Date(project.deadline).toLocaleDateString()}<br>
-              <a class="cta-button" href="proposal-form.html?project_id=${project.id}">Apply</a>
-            `;
-            container.appendChild(div);
-          });
-        } else {
-          container.innerHTML = "<p>No available projects.</p>";
-        }
-      })
-      .catch((err) => {
-        console.error("Error loading projects:", err);
-        document.getElementById("freelancerProjects").innerHTML = "<p>Error loading projects.</p>";
-      });
-  }
+      inboxContainer.innerHTML += "</ul>";
+    });
 }
-);
+// Auto-load a thread if URL has userId param
+const urlUserId = new URLSearchParams(window.location.search).get("userId");
+if (urlUserId) {
+  loadThread(urlUserId);
+}
+
+
+function loadThread(receiverId) {
+  activeReceiverId = receiverId;
+  fetch(`${API_URL}/messages/thread/${currentUserId}/${receiverId}`)
+    .then(res => res.json())
+    .then(data => {
+      chatThread.innerHTML = "";
+      data.forEach(msg => {
+        const side = msg.sender_id == currentUserId ? "You" : "Them";
+        chatThread.innerHTML += `<p><strong>${side}:</strong> ${msg.content}</p>`;
+      });
+    });
+}
+
+function sendMessage() {
+  const content = newMessageInput.value.trim();
+
+  if (!content) {
+    return alert("❗ Please type a message.");
+  }
+
+  if (!activeReceiverId) {
+    return alert("❗ Please select a conversation from the inbox first.");
+  }
+
+  fetch(`${API_URL}/messages/send`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      sender_id: currentUserId,
+      receiver_id: activeReceiverId,
+      content
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.message === "Message sent successfully") {
+        newMessageInput.value = "";
+        loadThread(activeReceiverId);
+      } else {
+        alert("❌ Failed to send message.");
+        console.error(data);
+      }
+    })
+    .catch(err => {
+      console.error("Message error:", err);
+      alert("❌ Could not send message.");
+    });
+}
+

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Project - SkillHub</title>
+  <style>
+  * {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #f2f5f9;
+    color: #333;
+    padding: 2rem;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .container:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fdfdfd;
+    transition: border-color 0.3s;
+  }
+
+  input:focus, textarea:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 1.5rem;
+    background-color: #0d3b66;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  h1, h2, h3 {
+    text-align: center;
+    color: #0d3b66;
+    margin-bottom: 1rem;
+  }
+  
+</style>
+
+
+</head>
+<body>
+  <div class="container">
+    <h2>Edit Project</h2>
+    <form id="editProjectForm">
+      <input type="text" id="title" placeholder="Project Title Available Projects" required />
+      <textarea id="description" placeholder="Project Description" required></textarea>
+      <input type="text" id="skills" placeholder="Skills (comma separated)" required />
+      <input type="number" id="budget" placeholder="Budget (₹)" required />
+      <input type="date" id="deadline" required />
+      <button type="submit">Update Project</button>
+    </form>
+  </div>
+
+
+  <script>
+    const API_URL = "http://127.0.0.1:4000";
+    const projectId = new URLSearchParams(window.location.search).get("project_id");
+
+    const form = document.getElementById("editProjectForm");
+
+    function loadProject() {
+      fetch(`${API_URL}/projects/my-project/${clientId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const project = data.projects.find(p => p.id == projectId);
+            if (project) {
+              document.getElementById("title").value = project.title;
+              document.getElementById("description").value = project.description;
+              document.getElementById("skills").value = project.skills;
+              document.getElementById("budget").value = project.budget;
+              document.getElementById("deadline").value = project.deadline.split("T")[0];
+            } else {
+              alert("⚠️ Project not found.");
+            }
+          }
+        })
+        .catch(err => {
+          console.error("Failed to load project", err);
+        });
+    }
+
+    form.onsubmit = (e) => {
+      e.preventDefault();
+
+      const updated = {
+        title: document.getElementById("title").value.trim(),
+        description: document.getElementById("description").value.trim(),
+        skills: document.getElementById("skills").value.trim(),
+        budget: document.getElementById("budget").value.trim(),
+        deadline: document.getElementById("deadline").value.trim(),
+      };
+
+      fetch(`${API_URL}/projects/${projectId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert("✅ Project updated successfully!");
+            window.location.href = `project-details.html?project_id=${projectId}`;
+          } else {
+            alert("❌ Failed to update project.");
+          }
+        })
+        .catch(err => {
+          console.error("Update error:", err);
+          alert("❌ Could not update project.");
+        });
+    };
+
+    loadProject();
+  </script>
+</body>
+</html>
