@@ -1,4 +1,4 @@
-<!-- freelancer.html (Updated to fix project and proposal loading) -->
+<!-- freelancer.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,14 +50,19 @@
       margin: 1rem 0;
       background-color: #f9f9f9;
     }
-    /* footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-      background-color: #ffffff;
-      color: #666;
-      margin-top: 2rem;
-    } */
+    .status {
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+    .accepted {
+      color: green;
+    }
+    .rejected {
+      color: red;
+    }
+    .pending {
+      color: orange;
+    }
   </style>
 </head>
 <body>
@@ -65,7 +70,6 @@
     <div class="logo">SkillHub - Freelancer</div>
     <nav>
       <a href="logout.html">Logout</a>
-      <!--<a href="create-profile.html">Create Profile</a> -->
     </nav>
   </header>
 
@@ -86,10 +90,6 @@
       </div>
     </section>
   </main>
-
-  <!-- <footer>
-    <p>&copy; 2025 SkillHub</p>
-  </footer> -->
 
   <script>
     const API_URL = "http://127.0.0.1:4000";
@@ -140,11 +140,17 @@
             data.proposals.forEach(p => {
               const div = document.createElement("div");
               div.className = "card";
+
+              let statusClass = "pending";
+              if (p.status === "accepted") statusClass = "accepted";
+              else if (p.status === "rejected") statusClass = "rejected";
+
               div.innerHTML = `
                 <strong>Project:</strong> ${p.project_title}<br>
                 <strong>Quote:</strong> ₹${p.quote}<br>
                 <strong>Timeline:</strong> ${p.timeline}<br>
                 <p><strong>Pitch:</strong> ${p.pitch}</p>
+                <p class="status ${statusClass}">Status: ${p.status || 'pending'}</p>
                 <a class="cta-button" href="message.html?userId=${p.client_id}">Message Client</a>
               `;
               container.appendChild(div);

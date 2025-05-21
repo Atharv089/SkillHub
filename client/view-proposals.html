@@ -82,8 +82,40 @@
     font-size: 0.9rem;
     color: #999;
   }
+
+    nav a {
+  color: #fff;
+      text-decoration: none;
+      margin-left: 1rem;
+      font-weight: 500;
+    }
+  .navbar-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0d3b66;
+  padding: 0.75rem 1.25rem;
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+}
 </style>
 </head>
+<div class="navbar-wrapper">
+    <header class="navbar">
+      <div class="logo">SkillHub - Client</div>
+      <nav>
+        <a href="client.html">Home</a>
+      </nav>
+    </header>
+  </div>
+
 <body>
   <div class="container">
     <h2>Proposals for Your Project</h2>
@@ -99,34 +131,62 @@
     const projectId = new URLSearchParams(window.location.search).get("project_id");
 
     function loadProposals() {
-      fetch(`${API_URL}/proposals/by-project/${projectId}`)
-        .then(res => res.json())
-        .then(data => {
-          const container = document.getElementById("proposalList");
-          container.innerHTML = "";
+  fetch(`${API_URL}/proposals/by-project/${projectId}`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("proposalList");
+      container.innerHTML = "";
 
-          if (data.success && data.proposals.length > 0) {
-            data.proposals.forEach(p => {
-              const div = document.createElement("div");
-              div.className = "proposal";
-              div.innerHTML = `
-                <h4>Freelancer: ${p.freelancer_name || 'Anonymous'}</h4>
-                <p><strong>Quote:</strong> ₹${p.quote}</p>
-                <p><strong>Timeline:</strong> ${p.timeline}</p>
-                <p><strong>Pitch:</strong> ${p.pitch}</p>
-                <p class="meta">Submitted on: ${new Date(p.created_at).toLocaleDateString()}</p>
-              `;
-              container.appendChild(div);
-            });
-          } else {
-            container.innerHTML = "<p>No proposals yet for this project.</p>";
+      if (data.success && data.proposals.length > 0) {
+        data.proposals.forEach(p => {
+          const div = document.createElement("div");
+          div.className = "proposal";
+          div.innerHTML = `
+            <h4>Freelancer: ${p.freelancer_name || 'Anonymous'}</h4>
+            <p><strong>Quote:</strong> ₹${p.quote}</p>
+            <p><strong>Timeline:</strong> ${p.timeline}</p>
+            <p><strong>Pitch:</strong> ${p.pitch}</p>
+            <p><strong>Status:</strong> ${p.status || 'pending'}</p>
+            <p class="meta">Submitted on: ${new Date(p.created_at).toLocaleDateString()}</p>
+          `;
+
+          if (p.status !== 'accepted') {
+            const acceptBtn = document.createElement("button");
+            acceptBtn.textContent = "Accept Proposal";
+            acceptBtn.className = "cta-button";
+            acceptBtn.onclick = () => {
+              if (confirm("Accept this proposal?")) {
+                fetch(`${API_URL}/proposals/accept`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ proposalId: p.id, projectId })
+                })
+                .then(res => res.json())
+                .then(resp => {
+                  alert(resp.message);
+                  loadProposals();
+                })
+                .catch(err => {
+                  console.error("Acceptance Error:", err);
+                  alert("Something went wrong.");
+                });
+              }
+            };
+            div.appendChild(acceptBtn);
           }
-        })
-        .catch(err => {
-          console.error("Error loading proposals:", err);
-          document.getElementById("proposalList").innerHTML = "<p>Failed to load proposals.</p>";
+
+          container.appendChild(div);
         });
-    }
+      } else {
+        container.innerHTML = "<p>No proposals yet for this project.</p>";
+      }
+    })
+    .catch(err => {
+      console.error("Error loading proposals:", err);
+      document.getElementById("proposalList").innerHTML = "<p>Failed to load proposals.</p>";
+    });
+}
+
 
     loadProposals();
   </script>

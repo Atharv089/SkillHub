@@ -44,6 +44,8 @@ app.use("/auth", authRoutes);
 app.use("/projects", projectRoutes);
 app.use("/proposals", proposalRoutes);
 app.use("/messages", messageRoutes);
+app.use("/proposals", require("./routes/proposal"));
+
 
 // ✅ Start the server (only once!)
 const PORT = 4000;

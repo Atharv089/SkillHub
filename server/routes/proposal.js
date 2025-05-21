@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
+const proposalController = require('../controllers/proposalController'); // ✅ ADD THIS LINE
 
 // Submit proposal
 router.post("/", (req, res) => {
@@ -65,6 +66,9 @@ router.get("/my/:freelancerId", (req, res) => {
     res.json({ success: true, proposals: results });
   });
 });
+
+router.post("/accept", proposalController.acceptProposal);
+
 
 
 module.exports = router;

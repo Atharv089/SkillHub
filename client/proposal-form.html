@@ -130,10 +130,42 @@
   border-radius: 5px;
   box-sizing: border-box;
 }
+
+  nav a {
+  color: #fff;
+      text-decoration: none;
+      margin-left: 1rem;
+      font-weight: 500;
+    }
+  .navbar-wrapper {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0d3b66;
+  padding: 0.75rem 1.25rem;
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+}
 </style>
 
 </head>
 <body>
+
+  <div class="navbar-wrapper">
+    <header class="navbar">
+      <div class="logo">SkillHub - Freelancer</div>
+      <nav>
+        <a href="freelancer.html">Home</a>
+      </nav>
+    </header>
+  </div>
   <div class="container">
     <h1>Submit Your Proposal</h1>
 
@@ -145,7 +177,7 @@
 
       <div class="card-box">
         <label for="budget">What is your proposed budget? (₹)</label>
-        <input type="number" id="budget" name="budget" placeholder="e.g. 5000">
+        <input type="number" id="quote" name="quote" placeholder="e.g. 5000">
       </div>
 
       <div class="card-box">
